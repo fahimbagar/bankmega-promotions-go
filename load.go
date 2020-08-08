@@ -32,6 +32,8 @@ var (
 	PROMO = "promolainnya.php"
 )
 
+// Load every category from base url https://www.bankmega.com/promolainnya.php
+// and get every category url from <script>
 func LoadCategory() (categories []Category) {
 	doc, err := htmlquery.LoadURL(fmt.Sprintf("%s/%s", BASE_URL, PROMO))
 	if err != nil {
@@ -57,6 +59,7 @@ func LoadCategory() (categories []Category) {
 	return categories
 }
 
+// Get pages from each category
 func (category *Category) GetPage() (err error) {
 	doc, err := htmlquery.LoadURL(fmt.Sprintf("%s/%s", BASE_URL, category.Url))
 	if err != nil {
@@ -76,6 +79,7 @@ func (category *Category) GetPage() (err error) {
 	return err
 }
 
+// Get each content url from each category from each page
 func (category *Category) GetPageContent() (err error) {
 	for i := 1; i <= category.Pages; i++ {
 		doc, err := htmlquery.LoadURL(fmt.Sprintf("%s/%s&page=%d", BASE_URL, category.Url, i))
@@ -104,6 +108,7 @@ func (category *Category) GetPageContent() (err error) {
 	return nil
 }
 
+// Get promotions from category and set wait group done after it finishes
 func (content *Content) GetPromotions(contentGroup *sync.WaitGroup) {
 	for {
 		doc, err := htmlquery.LoadURL(content.Url)
